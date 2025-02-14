@@ -16,13 +16,13 @@ const registerUser = asyncHandler(async (req, res) => {
   // 9.return response
 
 
-  
+
   // 1.Get user details from frontend
   const { fullname, email, username, password } = req.body;
   console.log(email)
 
 
-  
+
   // 2.check validation -  not empty
   if (
     [fullname, email, username, password].some((field) => field?.trim() === "")
@@ -30,7 +30,10 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required")
   }
 
-  
+  if(password >= 8){
+    throw new ApiError(400, "Password must be longer than 8 characters")
+  }
+
   // 3.check if user already exists: username, email
   const existedUser = User.findOne({
     $or: [{ username }, { email }]
@@ -41,7 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
 
-  
+
   // 4.check for images and avatar
   const avatarImageLocalPath = req.files?.avatar[0]?.path;
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
